@@ -23,6 +23,14 @@ class Messenger
   def put(msg)
     puts msg
   end
+
+  def banner 
+    puts "warp directory"
+    puts "usage: wd [add[!] <name> | rm <name> | ls]"
+    puts "  add   Add cwd as a warp target, use add! to overwrite existing"
+    puts "  rm    Remove warp target"
+    puts "  ls    List registered targets"
+  end
 end
 
 class Warper
@@ -35,7 +43,9 @@ class Warper
   end
   
   def add(name, overwrite)
-    if name.nil? then 
+    if ['add', 'add!', 'rm', 'ls'].include? name then
+      @msg.err! "reserved name: '#{name}'"
+    elsif name.nil? then 
       @msg.err! 'no name given'
     else
       add_inner name, Dir.pwd, overwrite
@@ -45,12 +55,12 @@ class Warper
   def rem(dest)
     all = ''
     found = iter_lines(dest) do |line, name, dir| 
-      if not name == dest then
+      unless name == dest then
         all += line
       end
     end
 
-    if not found then
+    unless found then
       @msg.wrn "warp does not exist '#{dest}'"
       exit 1
     else
@@ -64,7 +74,7 @@ class Warper
         msg.put dir
       end
     end
-    if not found then
+    unless found then
       @msg.err! "warp does not exist '#{dest}'"
     end
   end
@@ -79,7 +89,7 @@ class Warper
   def iter_lines(query='')
     found = false
     File.readlines(@alias_file).each do |line| 
-      if not line.strip().empty? then
+      unless line.strip().empty? then
         ali = line.split(':')
         name = ali[0]
         dir = ali[1]
@@ -110,6 +120,11 @@ end
 msg = Messenger.new
 engine = Warper.new "#{ENV['HOME']}/.warps", msg
 cmd, arg = ARGV
+
+if cmd.nil? then
+  msg.banner
+  exit 1
+end
 
 case cmd
 when 'add'
