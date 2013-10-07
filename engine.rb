@@ -12,12 +12,12 @@ class Messenger
   end
 
   def err!(msg)
-    puts 'err: '.red + msg
+    puts 'error: '.red + msg
     exit 1
   end
 
   def yay(msg)
-    puts 'yay! '.green + msg
+    puts 'ok! '.green + msg
   end
 
   def put(msg)
