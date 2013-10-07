@@ -1,4 +1,3 @@
-# ok hooray lulz from http://stackoverflow.com/questions/1489183/colorized-ruby-output
 class String
   def colorize(color_code) "\e[#{color_code}m#{self}\e[0m" end
   def red() colorize(31) end
@@ -16,7 +15,7 @@ class Messenger
     exit 1
   end
 
-  def ok(msg)
+  def yay(msg)
     puts 'ok! '.green + msg
   end
 
@@ -111,7 +110,7 @@ class Warper
       File.open(@alias_file, 'a') do |file|
         file.puts "#{name}:#{dir}"
       end
-      @msg.ok "added '#{name}' warping to #{dir}"
+      @msg.yay "added '#{name}' warping to #{dir}"
     end
   end
 end
@@ -138,7 +137,7 @@ when 'rm'
     msg.err! 'don\'t know what to remove'
   else
     engine.rem arg
-    msg.ok "removed warp '#{dest}'"
+    msg.yay "removed warp '#{dest}'"
   end
 
 when 'ls'

@@ -1,10 +1,12 @@
 #!/bin/sh
 
-engine=$(dirname $0)/engine.rb
-result=$(ruby $engine $*)
+# get the dir name of the shell script in both bash and zsh
+dir="$( cd "$( dirname "${BASH_SOURCE[0]:-$0}" )" && pwd )"
+
+result=$(ruby $dir/engine.rb $*)
 if [[ "$1" = "add" || "$1" = "add!" || "$1" = "ls" || "$1" = "rm" || ! $? -eq 0 ]]
 then
-    echo $result
-else 
-    cd $result
+    echo "$result"
+else
+    cd "$result"
 fi
