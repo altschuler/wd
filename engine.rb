@@ -10,7 +10,7 @@ class Messenger
     puts 'warning: '.yellow + msg
   end
 
-  def err!(msg)
+  def err(msg)
     puts 'error: '.red + msg
     exit 1
   end
@@ -43,9 +43,11 @@ class Warper
   
   def add(name, overwrite)
     if ['add', 'add!', 'rm', 'ls'].include? name then
-      @msg.err! "reserved name: '#{name}'"
+      @msg.err "reserved name: '#{name}'"
+      exit 1
     elsif name.nil? then 
-      @msg.err! 'no name given'
+      @msg.err 'no name given'
+      exit 1
     else
       add_inner name, Dir.pwd, overwrite
     end
@@ -61,9 +63,9 @@ class Warper
 
     unless found then
       @msg.wrn "warp does not exist '#{dest}'"
-      exit 1
     else
       File.open(@alias_file, 'w') { |file| file.write(all) }
+      msg.yay "removed warp '#{dest}'"
     end
   end
 
@@ -74,7 +76,8 @@ class Warper
       end
     end
     unless found then
-      @msg.err! "warp does not exist '#{dest}'"
+      @msg.err "warp does not exist '#{dest}'"
+      exit 1
     end
   end
 
@@ -116,33 +119,51 @@ class Warper
 end
 
 # warp drive
-msg = Messenger.new
-engine = Warper.new "#{ENV['HOME']}/.warps", msg
-cmd, arg = ARGV
+class Driver
+  attr_accessor :msg
+  attr_accessor :engine
 
-if cmd.nil? then
-  msg.banner
-  exit 1
-end
-
-case cmd
-when 'add'
-  engine.add arg, false
-
-when 'add!'
-  engine.add arg, true
-
-when 'rm'
-  if @arg.nil? then 
-    msg.err! 'don\'t know what to remove'
-  else
-    engine.rem arg
-    msg.yay "removed warp '#{dest}'"
+  def initialize
+    @msg = Messenger.new
+    @engine = Warper.new "#{ENV['HOME']}/.warps", @msg
   end
+  
+  def go(args)
+    cmd, arg = args
+    rst = args.drop 1
+    if cmd.nil? then
+      @msg.banner
+      exit 1
+    end
+    case cmd
+    when 'add'
+      @engine.add arg, false
 
-when 'ls'
-  engine.list_targets
+    when 'add!'
+      @engine.add arg, true
 
-else
-  engine.warp cmd
+    when 'rm'
+      if rst.empty? then 
+        @msg.err 'don\'t know what to remove'
+        exit 1
+      else
+        for id in rst
+          @engine.rem id
+        end
+        exit 1
+      end
+
+    when 'ls'
+      @engine.list_targets
+
+    else
+      if not rst.empty? then
+        @msg.err! 'too many arguments'
+      else
+        @engine.warp cmd
+      end
+    end
+  end
 end
+
+Driver.new().go ARGV
