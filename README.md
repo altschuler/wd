@@ -1,31 +1,30 @@
-warp
+wd
 ====
 
-Warp lets jump to custom directories in zsh, without using cd. Why? Because cd seems ineffecient when the folder is for example frequently visited.
+wd lets you create bookmarks of directories in your shell, and quickly navigate to them by. For example typing `wd dev` could take you to `~/Documents/Work/Code`
 
-###Setup
+Should work in most shells
 
-Add alias to .profile (or .bashrc/.zshrc):
+###Installation
 
-    echo "alias wrp='. /path/to/warp'" >> ~/.profile
+Put `engine.rb` and `warp` in some directory. Then add an alias in your `.rc` file
 
+    alias wd='. /path/to/warp'
 
 ###Usage
 
-Add warp point to current working directory:
+    warp <name>
+    
+Warp to bookmark named `<name>`
 
-    warp -a dev
+    warp add <name>
+    
+Add cwd as warp bookmark with id `<name>`
 
-From other directory, warp to dev with:
+    warp rm <name> [<name2> ...]
 
-    warp dev
+Remove bookmarks
 
-Remove warp point dev point:
-
-    warp -r dev
-
-List all warp points (stored in `~/.warprc`):
-
-    warp -l
-
-Print usage with no opts.
+    warp ls
+    
+List all bookmarks (stored in `~/.warps`):
