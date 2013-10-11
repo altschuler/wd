@@ -5,9 +5,13 @@ wd lets you create bookmarks of directories in your shell, and quickly navigate 
 
 Should work in most shells
 
+### Requirements
+`wd` depends on ruby
+
+
 ###Installation
 
-Put `engine.rb` and `warp` in some directory. Then add an alias in your `.rc` file
+Put `engine.rb` and `warp` in some directory. Then add an alias in your shell config to the `warp` file using dot space (so that the file will be executed in your current shell)
 
     alias wd='. /path/to/warp'
 
